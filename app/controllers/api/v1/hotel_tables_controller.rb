@@ -39,8 +39,8 @@ class Api::V1::HotelTablesController < ApplicationController
 
   private
     def load_hotel
-      @restaurant = Hotel.find_by id: params[:hotel_id]
-      unless @restaurant.present?
+      @hotel = Hotel.find_by id: params[:hotel_id]
+      unless @hotel.present?
         json_response "can not find a hotel", false, {}, :not_found
       end
    end

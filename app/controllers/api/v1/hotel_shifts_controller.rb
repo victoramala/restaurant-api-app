@@ -25,7 +25,7 @@ class Api::V1::HotelShiftsController < ApplicationController
     if @hotel_shift.update hotel_shift_params
       json_response "hotel_shift updated successfully", true, {hotel_shift: @hotel_shift}, :ok
     else
-      json_response "hotel_shift update failed", false, {}, :unprocessable_entity
+      json_response @hotel_shift.errors, false, {}, :unprocessable_entity
     end
   end
 
@@ -46,7 +46,7 @@ class Api::V1::HotelShiftsController < ApplicationController
    end
 
     def load_hotel_shift
-      @hotel_shift = RestaurantShift.find_by id: params[:id]
+      @hotel_shift = HotelShift.find_by id: params[:id]
       unless @hotel_shift.present?
         json_response "can not find a hotel_shift", false, {}, :not_found
       end

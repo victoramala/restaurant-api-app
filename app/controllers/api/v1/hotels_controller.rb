@@ -1,7 +1,7 @@
 class Api::V1::HotelsController < ApplicationController
   before_action :load_hotel,  only: [:show, :update, :destroy]
   def index
-    @hotels= hotel.all
+    @hotels= Hotel.all
     json_response "Listing hotels uccessfully", true, {hotels: @hotels}, :ok
   end
 
@@ -22,7 +22,7 @@ class Api::V1::HotelsController < ApplicationController
     if @hotel.update hotel_params
       json_response "hotel updated successfully", true, {hotel: @hotel}, :ok
     else
-      json_response hotel.errors, false, {}, :unprocessable_entity
+      json_response @hotel.errors, false, {}, :unprocessable_entity
     end
   end
 
