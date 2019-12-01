@@ -1,5 +1,6 @@
 class HotelTable < ApplicationRecord
   belongs_to :hotel
+  has_many :reservations, dependent: :destroy
   validates :name,:presence => true
   validate :min_guest_count_less_than_max_guest_count
   def min_guest_count_less_than_max_guest_count

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
        resources :hotel_shifts
      end
      resources :guests
+     resources :reservations
    end
   end
 end

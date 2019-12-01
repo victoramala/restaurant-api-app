@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Hi <%= @restaurant.name %></h1>
+    <p>
+      <%- if @booking_status == "updated" %>
+        Reservation time was updated on <%= @reservation.updated_at %>
+      <% else %>
+        New reservation was booked on <%= @reservation.created_at %>
+     <%end%>
+    </p>
+  </body>
+</html>
