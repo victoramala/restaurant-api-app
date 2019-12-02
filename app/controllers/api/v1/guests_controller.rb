@@ -3,17 +3,20 @@ class Api::V1::GuestsController < ApplicationController
 
   def index
     @guests = Guest.all
-    json_response "listing guests successfully", true, {guests: @guests}, :ok
+    guests_serializer = parse_json @guests
+    json_response "listing guests successfully", true, {guests: guests_serializer}, :ok
   end
 
   def show
-    json_response "Show guest successfully", true, {guest: @guest}, :ok
+    guest_serializer = parse_json @guest
+    json_response "Show guest successfully", true, {guest: guest_serializer}, :ok
   end
 
   def create
     guest = Guest.new(guest_params)
     if guest.save
-      json_response "guest created successfully", true, {guest: guest}, :ok
+      guest_serializer = parse_json guest
+      json_response "guest created successfully", true, {guest: guest_serializer}, :ok
     else
       json_response guest.errors, false, {}, :unprocessable_entity
     end
@@ -21,7 +24,8 @@ class Api::V1::GuestsController < ApplicationController
 
   def update
     if @guest.update guest_params
-      json_response "guest updated successfully", true, {guest: @guest}, :ok
+      guest_serializer = parse_json @guest
+      json_response "guest updated successfully", true, {guest: guest_serializer}, :ok
     else
       json_response @guest.errors, false, {}, :unprocessable_entity
     end

@@ -7,9 +7,9 @@ About
   1. Create an API endpoint that creates a reservation for the guest in a restaurant. The API should
   accept -
    * The table for reservation,
-   * the restaurant shift in which you want the reservation, reservation time -- reservation time
+   * The restaurant shift in which you want the reservation, reservation time -- reservation time
   must lie within restaurant shift start time and end time,
-   * guest who made the reservation, guest count for the reservation -- the guest count must be
+   * Guest who made the reservation, guest count for the reservation -- the guest count must be
   between maximum and minimum capacity of the table selected for reservation
    * When the reservation is created the restaurant should receive an email with guest details.
    * Create an API endpoint that updates the reservation - when the reservation details are changed,

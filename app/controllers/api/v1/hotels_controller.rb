@@ -1,18 +1,21 @@
 class Api::V1::HotelsController < ApplicationController
   before_action :load_hotel,  only: [:show, :update, :destroy]
   def index
-    @hotels= Hotel.all
-    json_response "Listing hotels uccessfully", true, {hotels: @hotels}, :ok
+    @hotels= Hotel.includes(hotel_tables: [:reservations])
+    hotels_serializer = parse_json @hotels
+    json_response "Listing hotels uccessfully", true, {hotels: hotels_serializer}, :ok
   end
 
   def show
-    json_response "Showing hotel successfully", true, {hotel: @hotel}, :ok
+    hotel_serializer = parse_json @hotel
+    json_response "Showing hotel successfully", true, {hotel: hotel_serializer}, :ok
   end
 
   def create
     hotel = Hotel.new(hotel_params)
     if hotel.save
-      json_response "hotel created successfully", true, {hotel: hotel}, :ok
+      hotel_serializer = parse_json hotel
+      json_response "hotel created successfully", true, {hotel: hotel_serializer}, :ok
     else
       json_response hotel.errors, false, {}, :unprocessable_entity
     end
@@ -20,7 +23,8 @@ class Api::V1::HotelsController < ApplicationController
 
   def update
     if @hotel.update hotel_params
-      json_response "hotel updated successfully", true, {hotel: @hotel}, :ok
+      hotel_serializer = parse_json @hotel
+      json_response "hotel updated successfully", true, {hotel: hotel_serializer}, :ok
     else
       json_response @hotel.errors, false, {}, :unprocessable_entity
     end

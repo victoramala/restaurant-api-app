@@ -1,28 +1,31 @@
 class Api::V1::ReservationsController < ApplicationController
   before_action :load_guest, only: [:create, :update]
-  before_action :load_hotel_table, only: [:create, :update]
+  before_action :load_hotel_table, only: [:create, :update,:index]
   before_action :load_reservation, only: [:show, :update, :destroy]
 
   def index
-    @reservations = Reservation.all
-    json_response "listing reservations successfully", true, {restuarant_tables: @reservations}, :ok
+    @reservations = @hotel_table.reservations
+    reservations_serializer = parse_json @reservations
+    json_response "listing reservations successfully", true, {reservations: reservations_serializer}, :ok
   end
 
   def show
-    json_response "Show reservation successfully", true, {restuarant_table: @reservation}, :ok
+    reservation_serializer = parse_json @reservation
+    json_response "Show reservation successfully", true, {reservation: reservation_serializer}, :ok
   end
 
   def create
     reservation = Reservation.new(reservation_params)
     reservation.hotel_table_id = params[:reservation][:hotel_table_id]
     reservation.guest_id = params[:reservation][:guest_id]
+    reservation_serializer = parse_json reservation
     if reservation.save
       flag = "created"
       # @guest = reservation.guest
       # @restaurant = reservation.restaurant_table.restaurant
       UserMailer.guest_notify(reservation, flag).deliver
       UserMailer.restaurant_notify(reservation, flag).deliver
-      json_response "reservation created successfully", true, {reservation: reservation}, :ok
+      json_response "reservation created successfully", true, {reservation: reservation_serializer}, :ok
     else
       json_response reservation.errors, false, {}, :unprocessable_entity
     end
@@ -30,10 +33,11 @@ class Api::V1::ReservationsController < ApplicationController
 
   def update
     if @reservation.update reservation_params
+      reservation_serializer = parse_json @reservation
       flag = "updated"
       UserMailer.guest_notify(@reservation, flag).deliver
       UserMailer.restaurant_notify(@reservation, flag).deliver
-      json_response "reservation updated successfully", true, {reservation: @reservation}, :ok
+      json_response "reservation updated successfully", true, {reservation: reservation_serializer }, :ok
     else
       json_response @reservation.errors, false, {}, :unprocessable_entity
     end

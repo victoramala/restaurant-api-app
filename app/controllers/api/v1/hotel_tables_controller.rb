@@ -4,18 +4,21 @@ class Api::V1::HotelTablesController < ApplicationController
 
   def index
     @hotel_tables = @hotel.hotel_tables
-    json_response "listing hotel_tables successfully", true, {hotel_tables: @hotel_tables}, :ok
+    hotel_tables_serializer = parse_json @hotel_tables
+    json_response "listing hotel_tables successfully", true, {hotel_tables: hotel_tables_serializer}, :ok
   end
 
   def show
-    json_response "Show hotel_table successfully", true, {hotel_table: @hotel_table}, :ok
+    hotel_table_serializer = parse_json @hotel_table
+    json_response "Show hotel_table successfully", true, {hotel_table: hotel_table_serializer}, :ok
   end
 
   def create
     hotel_table = HotelTable.new(hotel_table_params)
     hotel_table.hotel_id = params[:hotel_id]
     if hotel_table.save
-      json_response "hotel_table created successfully", true, {hotel_table: hotel_table}, :ok
+      hotel_table_serializer = parse_json hotel_table
+      json_response "hotel_table created successfully", true, {hotel_table: hotel_table_serializer}, :ok
     else
       json_response hotel_table.errors, false, {}, :unprocessable_entity
     end
@@ -23,7 +26,8 @@ class Api::V1::HotelTablesController < ApplicationController
 
   def update
     if @hotel_table.update hotel_table_params
-      json_response "hotel_table updated successfully", true, {hotel_table: @hotel_table}, :ok
+      hotel_table_serializer = parse_json @hotel_table
+      json_response "hotel_table updated successfully", true, {hotel_table: hotel_table_serializer}, :ok
     else
       json_response @hotel_table.errors, false, {}, :unprocessable_entity
     end

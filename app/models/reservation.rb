@@ -2,7 +2,7 @@ class Reservation < ApplicationRecord
   belongs_to :guest
   belongs_to :hotel_table
   validate :reservation_guest_count_check
-  # validate :reservation_time_check
+  validate :reservation_time_check
   def reservation_guest_count_check
     if guest_count and guest_count > 0
       unless guest_count.between?(self.hotel_table.min_guest_count,self.hotel_table.max_guest_count )
@@ -13,10 +13,14 @@ class Reservation < ApplicationRecord
     end
   end
 
-  # def reservation_time_check
-  #   c= self.hotel_table.hotel.hotel_shifts.where("start_time <= ? and end_time > ?", reservation_time, reservation_time)
-  #   if c.count > 0
-  #     errors.add(:reserve_time, "time slot not available")
-  #   end
-  # end
+  def reservation_time_check
+    unless reservation_time.blank?
+      c= self.hotel_table.hotel.hotel_shifts.where("start_time <= ? and end_time > ?", reservation_time, reservation_time)
+      if c.count > 0
+        errors.add(:reserve_time, "Reservation time slot not available please select another one")
+      end
+    else
+      errors.add(:reserve_time, "Reservation time empty or invalid")
+    end
+  end
 end
